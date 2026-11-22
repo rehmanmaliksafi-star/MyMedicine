@@ -196,12 +196,26 @@ const Cart = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
         body: `product_id=${btn.dataset.productId}&quantity=1`
       });
-      const data = await res.json();
+      // Never treat a real server answer as a "network error": read the
+      // body as text first, then parse JSON only if it really is JSON.
+      const text = await res.text();
+      let data = null;
+      try { data = JSON.parse(text); } catch { data = null; }
+      if (!data) {
+        if (res.status === 403) { Toast.show('Session expired — please refresh the page and try again.', 'error'); }
+        else { Toast.show('Something went wrong. Please try again.', 'error'); }
+        btn.innerHTML = orig; btn.disabled = false;
+        return;
+      }
       if (data.status === 'success') {
         this.updateBadge(data.cart_count);
         Toast.show(data.message || 'Added to cart!', 'success');
         btn.innerHTML = '<i class="fas fa-check"></i> Added!';
         setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1800);
+      } else if (data.status === 'login_required') {
+        Toast.show(data.message || 'Please sign in first.', 'warning');
+        setTimeout(() => window.location.href = data.redirect_url || '/accounts/login/', 1200);
+        btn.innerHTML = orig; btn.disabled = false;
       } else if (data.status === 'prescription_required') {
         Toast.show('Prescription required — redirecting…', 'warning');
         setTimeout(() => window.location.href = data.redirect_url, 1000);
@@ -210,7 +224,7 @@ const Cart = {
         Toast.show(data.message || 'Error.', 'error');
         btn.innerHTML = orig; btn.disabled = false;
       }
-    } catch { Toast.show('Network error. Please try again.', 'error'); btn.innerHTML = orig; btn.disabled = false; }
+    } catch { Toast.show('Network error. Please check your connection and try again.', 'error'); btn.innerHTML = orig; btn.disabled = false; }
   }
 };
 
@@ -234,8 +248,14 @@ const CartQty = {
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
             body: JSON.stringify({ item_id: input.dataset.itemId, quantity: qty })
           });
-          const data = await res.json();
-          if (data.status === 'success') {
+          const text = await res.text();
+          let data = null;
+          try { data = JSON.parse(text); } catch { data = null; }
+          if (!data) { Toast.show('Something went wrong. Please refresh and try again.', 'error'); return; }
+          if (data.status === 'login_required') {
+            Toast.show(data.message || 'Please sign in first.', 'warning');
+            setTimeout(() => window.location.href = '/accounts/login/', 1200);
+          } else if (data.status === 'success') {
             Cart.updateBadge(data.cart_count);
             const tot = document.getElementById('cartTotal');
             if (tot) tot.textContent = `Rs. ${Number(data.cart_total).toLocaleString()}`;

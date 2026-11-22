@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Confirming Payment — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:560px;">
+  <div class="card p-5 text-center">
+    <div class="spinner-border text-primary my-3" role="status"></div>
+    <h4 style="font-weight:800;">Confirming your payment…</h4>
+    <p style="color:var(--text-muted);">Please wait while we verify the payment with Easypaisa. Do not refresh.</p>
+    <form id="cbForm" method="post" action="{{ callback_url }}">
+      {% for key, value in data.items %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <button type="submit" class="btn btn-primary mt-2">Continue</button>
+    </form>
+  </div>
+</div>
+<script>
+  setTimeout(function () { document.getElementById('cbForm').submit(); }, 800);
+</script>
+{% endblock %}

@@ -10,6 +10,12 @@ def cart_count(request):
                 count = cart.get_item_count()
         except Exception:
             pass
+    else:
+        try:
+            from cart.views import _session_cart_count
+            count = _session_cart_count(request)
+        except Exception:
+            pass
     return {'cart_count': count}
 
 def site_settings(request):

@@ -6,7 +6,7 @@ import uuid
 class Order(models.Model):
     STATUS_CHOICES = (('pending','Pending'),('processing','Processing'),('shipped','Shipped'),('delivered','Delivered'),('cancelled','Cancelled'))
     PAYMENT_STATUS = (('pending','Pending'),('paid','Paid'),('failed','Failed'),('refunded','Refunded'))
-    PAYMENT_METHODS = (('cash','Cash on Delivery'),('simulated','Card Payment (Simulated)'))
+    PAYMENT_METHODS = (('cash','Cash on Delivery'),('simulated','Card Payment (Simulated)'),('easypaisa','Easypaisa / Card'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     order_number = models.CharField(max_length=20, unique=True, editable=False)
     full_name = models.CharField(max_length=200)
@@ -19,6 +19,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='cash')
+    payment_reference = models.CharField(max_length=100, blank=True, default='', help_text='Easypaisa transaction reference, when paid online.')
     notes = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

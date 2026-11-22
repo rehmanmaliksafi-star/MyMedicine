@@ -33,6 +33,10 @@ def checkout_view(request):
                 OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity, price=item.product.final_price)
                 p = item.product; p.stock = max(0, p.stock - item.quantity); p.save(update_fields=['stock'])
             cart.items.all().delete()
+            if request.POST.get('payment_method') == 'easypaisa':
+                # Pay on Easypaisa's secure page; order stays pending until
+                # the gateway callback confirms the payment.
+                return redirect('payments:easypaisa_start', order_id=order.id)
             messages.success(request, f'Order #{order.order_number} placed successfully!')
             return redirect('order_confirmation', order_id=order.id)
     return render(request, 'orders/checkout.html', {'cart_items': cart_items, 'subtotal': subtotal, 'shipping': shipping, 'total': total})

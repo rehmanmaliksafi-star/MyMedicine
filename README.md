@@ -139,6 +139,27 @@ ALLOWED_HOSTS = ['yourusername.pythonanywhere.com']
 
 ---
 
+## 💳 Easypaisa Payments (Sandbox / Live)
+
+Checkout offers **Pay with Easypaisa / Card**. The customer is sent to Easypaisa's
+secure hosted payment page (Easypay) to pay the real order total — card numbers and
+CVV are entered only there, never on this site. A wrong card/CVV is declined by the
+gateway and the customer sees a clear "Payment Failed" page (no money is deducted).
+
+| Setting | Where |
+|---|---|
+| `EASYPAY_STORE_ID`, `EASYPAY_HASH_KEY` | Issued with your Easypaisa merchant account (apply at easypaisa.com.pk/business) |
+| `EASYPAY_SANDBOX=True` | Sandbox: `easypaystg.easypaisa.com.pk` (test) |
+| `EASYPAY_SANDBOX=False` | Live: `easypay.easypaisa.com.pk` (real money) |
+
+Until real credentials are set in `.env`, checkout uses a clearly-labelled
+**sandbox simulator** page so the whole flow can be tested with no real money:
+test card `4242 4242 4242 4242` succeeds, `4000 0000 0000 0002` is declined,
+any invalid number/CVV is declined. Set the real `EASYPAY_STORE_ID` /
+`EASYPAY_HASH_KEY` and restart the app to go live — no code change needed.
+
+---
+
 ## 🔧 Common Fixes
 
 | Problem | Fix |

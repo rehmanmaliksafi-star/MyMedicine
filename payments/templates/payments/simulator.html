@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Easypaisa Payment (Test Mode) — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:560px;">
+  <div class="alert alert-warning">
+    <strong><i class="fas fa-flask me-2"></i>TEST MODE — Easypaisa sandbox simulator</strong><br>
+    <span style="font-size:.85rem;">No real money moves here. This page stands in for Easypaisa's secure
+    payment page until the merchant's real Easypaisa credentials are added.
+    On the live gateway you would enter these same details on Easypaisa's own page.</span>
+  </div>
+  <div class="card p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 style="font-weight:800;margin:0;"><span style="color:#7CB342;">easy</span><span style="color:#558B2F;">paisa</span> <span style="font-size:.9rem;color:var(--text-muted);">Secure Payment</span></h4>
+      <span class="badge bg-success"><i class="fas fa-lock me-1"></i>SSL</span>
+    </div>
+    <div class="d-flex justify-content-between mb-1" style="font-size:.9rem;color:var(--text-muted);"><span>Order</span><strong style="color:var(--text);">#{{ order.order_number }}</strong></div>
+    <div class="d-flex justify-content-between mb-3"><span style="font-size:.9rem;color:var(--text-muted);">Amount to pay</span><strong style="font-size:1.25rem;color:var(--primary);">Rs. {{ order.total_amount }}</strong></div>
+    <hr>
+    <form method="post" action="{% url 'payments:easypaisa_simulate' order.id %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Pay with</label>
+        <select name="pay_method" id="payMethod" class="form-select">
+          <option value="wallet">Easypaisa Wallet (mobile number + OTP)</option>
+          <option value="card">Debit / Credit Card</option>
+        </select>
+      </div>
+      <div id="walletFields">
+        <label class="form-label">Easypaisa Mobile Number</label>
+        <input type="tel" name="mobile_number" class="form-control" placeholder="03XX-XXXXXXX" maxlength="11">
+        <div class="form-text">Enter the 11-digit Easypaisa number. On the live gateway an OTP is sent to this number.</div>
+      </div>
+      <div id="cardFields" style="display:none;">
+        <label class="form-label">Card Number</label>
+        <input type="text" name="card_number" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19" inputmode="numeric">
+        <div class="row g-2 mt-2">
+          <div class="col-6"><label class="form-label">Expiry (MM/YY)</label><input type="text" name="expiry" class="form-control" placeholder="12/28" maxlength="5"></div>
+          <div class="col-6"><label class="form-label">CVV</label><input type="password" name="cvv" class="form-control" placeholder="123" maxlength="4" inputmode="numeric"></div>
+        </div>
+        <div class="form-text">Test cards: <code>4242 4242 4242 4242</code> succeeds, <code>4000 0000 0000 0002</code> is declined. A wrong number or CVV is declined with a clear error.</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg w-100 mt-3"><i class="fas fa-lock me-2"></i>Pay Rs. {{ order.total_amount }}</button>
+      <p class="text-center mt-3" style="font-size:.8rem;color:var(--text-muted);">
+        <i class="fas fa-shield-alt me-1 text-success"></i>
+        Your payment details go only to Easypaisa. MyMedicine never stores card numbers or CVV.
+      </p>
+    </form>
+  </div>
+</div>
+<script>
+  document.getElementById('payMethod').addEventListener('change', function () {
+    var card = this.value === 'card';
+    document.getElementById('cardFields').style.display = card ? 'block' : 'none';
+    document.getElementById('walletFields').style.display = card ? 'none' : 'block';
+  });
+</script>
+{% endblock %}

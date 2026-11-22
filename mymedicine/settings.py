@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core', 'accounts', 'cart', 'orders', 'admin_panel', 'chatbot', 'articles',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,15 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Easypay (Easypaisa Merchant Services) — payment gateway settings.
+# Credentials come from the environment only; see .env.example. Until the
+# merchant's real Store ID / Hash Key are set, checkout uses the clearly
+# labelled sandbox simulator (no real money moves).
+EASYPAY_STORE_ID = os.environ.get('EASYPAY_STORE_ID', 'YOUR_EASYPAY_STORE_ID')
+EASYPAY_HASH_KEY = os.environ.get('EASYPAY_HASH_KEY', 'YOUR_EASYPAY_HASH_KEY')
+EASYPAY_ACCOUNT_NO = os.environ.get('EASYPAY_ACCOUNT_NO', '')
+EASYPAY_SANDBOX = os.environ.get('EASYPAY_SANDBOX', 'True') == 'True'
 
 SITE_NAME = 'MyMedicine'
 SITE_TAGLINE = 'Your Trusted Online Pharmacy'

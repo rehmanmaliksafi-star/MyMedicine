@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Redirecting to Easypaisa — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:560px;">
+  <div class="card p-5 text-center">
+    <div class="mb-3"><i class="fas fa-lock fa-3x text-primary"></i></div>
+    <h3 style="font-weight:800;">Redirecting to Easypaisa…</h3>
+    <p style="color:var(--text-muted);">
+      You are being sent to Easypaisa's secure payment page to pay
+      <strong>Rs. {{ order.total_amount }}</strong> for order
+      <strong>#{{ order.order_number }}</strong>.
+    </p>
+    <p style="font-size:.85rem;color:var(--text-muted);">
+      <i class="fas fa-shield-alt me-1 text-success"></i>
+      Your card or wallet details are entered only on Easypaisa's page —
+      they never pass through our site.
+    </p>
+    <div class="spinner-border text-primary my-3" role="status"></div>
+    <p style="font-size:.85rem;color:var(--text-muted);">Please do not refresh or press back.</p>
+    <form id="easypayForm" method="post" action="{{ checkout_url }}">
+      {% for key, value in payload.items %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+      <button type="submit" class="btn btn-primary mt-2">Continue to Easypaisa</button>
+    </form>
+  </div>
+</div>
+<script>
+  // Auto-submit to Easypaisa's hosted checkout after a short pause.
+  setTimeout(function () { document.getElementById('easypayForm').submit(); }, 1500);
+</script>
+{% endblock %}
