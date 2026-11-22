@@ -1,0 +1,17 @@
+<div class="col-lg-2 admin-sidebar d-none d-lg-block">
+  <div style="padding:.75rem 0;">
+    <div style="padding:.5rem 1.25rem .25rem;font-size:.68rem;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.1em;">Main</div>
+    <a href="/dashboard/" class="admin-nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><i class="fas fa-chart-bar fa-fw me-2"></i>Dashboard</a>
+    <a href="/dashboard/products/" class="admin-nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-capsules fa-fw me-2"></i>Products</a>
+    <a href="/dashboard/categories/" class="admin-nav-link {% if request.resolver_match.url_name == 'category_management' %}active{% endif %}"><i class="fas fa-tags fa-fw me-2"></i>Categories</a>
+    <a href="/dashboard/orders/" class="admin-nav-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-shopping-bag fa-fw me-2"></i>Orders</a>
+    <div style="padding:.5rem 1.25rem .25rem;font-size:.68rem;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.1em;margin-top:.5rem;">Content</div>
+    <a href="/dashboard/prescriptions/" class="admin-nav-link {% if 'prescription' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-prescription fa-fw me-2"></i>Prescriptions {% if pending_prescriptions > 0 %}<span class="badge bg-danger ms-auto" style="font-size:.65rem;">{{ pending_prescriptions }}</span>{% endif %}</a>
+    <a href="/dashboard/promo-images/" class="admin-nav-link {% if 'promo' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-images fa-fw me-2"></i>Promo Images</a>
+    <a href="/dashboard/banners/" class="admin-nav-link {% if 'banner' in request.resolver_match.url_name %}active{% endif %}"><i class="fas fa-bullhorn fa-fw me-2"></i>Banners</a>
+    <a href="/dashboard/users/" class="admin-nav-link {% if request.resolver_match.url_name == 'user_management' %}active{% endif %}"><i class="fas fa-users fa-fw me-2"></i>Users</a>
+    <div style="padding:.5rem 1.25rem .25rem;font-size:.68rem;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.1em;margin-top:.5rem;">System</div>
+    <a href="/admin/" class="admin-nav-link"><i class="fas fa-cog fa-fw me-2"></i>Django Admin</a>
+    <a href="/" class="admin-nav-link"><i class="fas fa-store fa-fw me-2"></i>View Store</a>
+  </div>
+</div>

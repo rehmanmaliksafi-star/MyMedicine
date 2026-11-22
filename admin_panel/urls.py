@@ -1,0 +1,25 @@
+from django.urls import path
+from . import views
+urlpatterns = [
+    path('', views.dashboard_home, name='dashboard'),
+    path('products/', views.product_management, name='product_management'),
+    path('products/add/', views.product_add, name='product_add'),
+    path('products/edit/<int:product_id>/', views.product_edit, name='product_edit'),
+    path('products/delete/<int:product_id>/', views.product_delete, name='product_delete'),
+    path('categories/', views.category_management, name='category_management'),
+    path('orders/', views.order_management, name='order_management'),
+    path('orders/update/<int:order_id>/', views.order_update_status, name='order_update_status'),
+    path('prescriptions/', views.prescription_management, name='prescription_management'),
+    path('prescriptions/review/<int:rx_id>/', views.prescription_review, name='prescription_review'),
+    path('users/', views.user_management, name='user_management'),
+    path('banners/', views.banner_management, name='banner_management'),
+    path('banners/add/', views.banner_add, name='banner_add'),
+    path('banners/edit/<int:banner_id>/', views.banner_edit, name='banner_edit'),
+    path('banners/delete/<int:banner_id>/', views.banner_delete, name='banner_delete'),
+    path('banners/toggle/<int:banner_id>/', views.banner_toggle, name='banner_toggle'),
+    path('promo-images/', views.promo_management, name='promo_management'),
+    path('promo-images/add/', views.promo_add, name='promo_add'),
+    path('promo-images/edit/<int:promo_id>/', views.promo_edit, name='promo_edit'),
+    path('promo-images/delete/<int:promo_id>/', views.promo_delete, name='promo_delete'),
+    path('promo-images/toggle/<int:promo_id>/', views.promo_toggle, name='promo_toggle'),
+]

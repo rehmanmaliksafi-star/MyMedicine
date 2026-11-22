@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Upload Prescription — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-prescription me-2"></i>Upload Prescription</h1><p>Our licensed pharmacist reviews within 24 hours</p></div></div>
+<div class="container mb-5" style="max-width:720px;">
+  {% if product %}<div class="alert alert-info mb-4 reveal"><i class="fas fa-info-circle me-2"></i>Uploading prescription for <strong>{{ product.name }}</strong>. Once approved, you can add it to your cart.</div>{% endif %}
+  <div class="card p-4 p-md-5 reveal">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% if product %}<input type="hidden" name="product_id" value="{{ product.id }}">{% endif %}
+      <div class="mb-4">
+        <label class="form-label"><i class="fas fa-file-image me-2 text-primary"></i>Prescription File *</label>
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <h5 style="color:var(--text);font-weight:700;">Drop your prescription here</h5>
+          <p style="color:var(--text-muted);font-size:.875rem;">or click to browse — JPG, PNG, PDF (max 10MB)</p>
+          <input type="file" name="prescription_image" id="rxFile" accept="image/*,.pdf" required data-preview="rxPreview" data-label="rxFileName" style="display:none;">
+          <button type="button" onclick="document.getElementById('rxFile').click()" class="btn btn-outline-primary btn-sm mt-2"><i class="fas fa-folder-open me-2"></i>Choose File</button>
+        </div>
+        <img id="rxPreview" src="" alt="Preview" style="display:none;max-height:200px;margin-top:.75rem;border-radius:var(--r);border:1px solid var(--border);">
+        <div id="rxFileName" style="margin-top:.5rem;font-size:.8rem;color:var(--text-muted);font-weight:600;"></div>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6"><label class="form-label">Doctor's Name</label><input type="text" name="doctor_name" class="form-control" placeholder="Dr. Ahmed Khan"></div>
+        <div class="col-md-6"><label class="form-label">Patient Name</label><input type="text" name="patient_name" class="form-control" value="{{ user.get_full_name }}"></div>
+        <div class="col-12"><label class="form-label">Notes for Pharmacist</label><textarea name="notes" class="form-control" rows="2" placeholder="Any special instructions…"></textarea></div>
+      </div>
+      {% if not product and rx_products %}
+      <div class="mb-4"><label class="form-label">Related Medicine (optional)</label>
+        <select name="product_id" class="form-select"><option value="">-- Select if applicable --</option>{% for p in rx_products %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}</select>
+      </div>
+      {% endif %}
+      <div class="alert mb-4" style="background:var(--primary-50);border-left:4px solid var(--primary);"><i class="fas fa-clock me-2 text-primary"></i><strong>Review Time:</strong> 24 hours. Track status at <a href="/my-prescriptions/">My Prescriptions</a>.</div>
+      <button type="submit" class="btn btn-primary btn-lg w-100 btn-shimmer"><i class="fas fa-upload me-2"></i>Submit Prescription</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

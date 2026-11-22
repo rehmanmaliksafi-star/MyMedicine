@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}All Products — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container"><h1><i class="fas fa-capsules me-2"></i>Our Products</h1><p>Genuine medicines and healthcare products</p></div>
+</div>
+<div class="container mb-5">
+  <div class="row g-4">
+    <div class="col-lg-3">
+      <div class="card p-3 sticky-top" style="top:80px;">
+        <h6 style="font-weight:800;color:var(--text);margin-bottom:1rem;"><i class="fas fa-filter me-2 text-primary"></i>Filter Products</h6>
+        <form method="get" id="filterForm">
+          <input type="hidden" name="q" value="{{ search_query }}">
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select" onchange="this.form.submit()">
+              <option value="">All Categories</option>
+              {% for cat in categories %}<option value="{{ cat.slug }}" {% if current_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sort By</label>
+            <select name="sort" class="form-select" onchange="this.form.submit()">
+              <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+              <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low → High</option>
+              <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High → Low</option>
+              <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name A–Z</option>
+            </select>
+          </div>
+          {% if search_query or current_category %}<a href="/products/" class="btn btn-outline-secondary btn-sm w-100"><i class="fas fa-times me-1"></i>Clear Filters</a>{% endif %}
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-9">
+      <form method="get" class="mb-4">
+        <input type="hidden" name="category" value="{{ current_category }}">
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search by medicine name, generic name…" value="{{ search_query }}">
+          <button type="submit" class="btn btn-primary px-4"><i class="fas fa-search me-1"></i>Search</button>
+        </div>
+      </form>
+      <p style="color:var(--text-muted);font-size:.875rem;margin-bottom:1rem;"><strong>{{ products|length }}</strong> product{% if products|length != 1 %}s{% endif %} found{% if search_query %} for "<strong>{{ search_query }}</strong>"{% endif %}</p>
+      {% if products %}
+      <div class="row g-3 stagger-children">
+        {% for product in products %}
+        <div class="col-6 col-md-4 reveal">
+          <div class="product-card">
+            <a href="/products/{{ product.slug }}/" class="text-decoration-none">
+              <div class="product-card-img">
+                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-main" loading="lazy">{% if product.image_hover %}<img src="{{ product.image_hover.url }}" alt="{{ product.name }}" class="img-hover" loading="lazy">{% endif %}
+                {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-muted);"><i class="fas fa-pills" style="font-size:2.5rem;color:var(--border);"></i></div>{% endif %}
+                {% if product.needs_prescription %}<span class="product-badge badge-rx"><i class="fas fa-prescription me-1"></i>Rx</span>{% endif %}
+                {% if product.discount_percent %}<span class="product-badge badge-sale">-{{ product.discount_percent }}%</span>{% endif %}
+              </div>
+            </a>
+            <div class="product-card-body">
+              <span class="product-category-tag">{{ product.category.name }}</span>
+              <h6 class="product-name"><a href="/products/{{ product.slug }}/" style="color:var(--text);text-decoration:none;">{{ product.name }}</a></h6>
+              <div class="product-price"><span class="price-current">Rs. {{ product.final_price }}</span>{% if product.discount_price %}<span class="price-original">Rs. {{ product.price }}</span>{% endif %}</div>
+              <div class="d-flex gap-2">
+                <a href="/products/{{ product.slug }}/" class="btn btn-outline-primary btn-sm" style="border-radius:8px;flex-shrink:0;"><i class="fas fa-eye"></i></a>
+                {% if product.stock > 0 %}
+                <button class="btn-add-cart flex-fill {% if product.needs_prescription %}rx-required{% endif %}" data-product-id="{{ product.id }}" data-needs-rx="{{ product.needs_prescription|lower }}" style="font-size:.78rem;">
+                  {% if product.needs_prescription %}<i class="fas fa-prescription"></i>Rx Required{% else %}<i class="fas fa-cart-plus"></i>Add{% endif %}
+                </button>
+                {% else %}<button class="btn-add-cart flex-fill" disabled style="background:var(--text-light);cursor:not-allowed;font-size:.75rem;">Out of Stock</button>{% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="fas fa-search" style="font-size:4rem;color:var(--border);"></i>
+        <h5 style="color:var(--text-muted);margin:1rem 0 .5rem;">No products found</h5>
+        <a href="/products/" class="btn btn-primary mt-2">Browse All Products</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

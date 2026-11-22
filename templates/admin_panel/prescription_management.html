@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Prescriptions — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="mb-4"><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">Prescription Management</h2><p style="color:var(--text-muted);margin:0;font-size:.875rem;">Review and approve patient prescriptions</p></div>
+  <div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="/dashboard/prescriptions/" class="btn {% if not status_filter %}btn-primary{% else %}btn-outline-secondary{% endif %} btn-sm">All</a>
+    <a href="?status=pending" class="btn {% if status_filter == 'pending' %}btn-warning{% else %}btn-outline-secondary{% endif %} btn-sm"><i class="fas fa-clock me-1"></i>Pending</a>
+    <a href="?status=approved" class="btn {% if status_filter == 'approved' %}btn-success{% else %}btn-outline-secondary{% endif %} btn-sm"><i class="fas fa-check me-1"></i>Approved</a>
+    <a href="?status=rejected" class="btn {% if status_filter == 'rejected' %}btn-danger{% else %}btn-outline-secondary{% endif %} btn-sm"><i class="fas fa-times me-1"></i>Rejected</a>
+  </div>
+  <div class="d-flex flex-column gap-3">
+    {% for rx in prescriptions %}
+    <div class="card p-4 reveal">
+      <div class="row g-3 align-items-start">
+        <div class="col-md-2 text-center">
+          {% if rx.prescription_image %}<a href="{{ rx.prescription_image.url }}" target="_blank"><img src="{{ rx.prescription_image.url }}" style="width:90px;height:90px;object-fit:cover;border-radius:var(--r);border:2px solid var(--border);transition:all .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" alt="Rx"></a><div style="font-size:.7rem;color:var(--text-muted);margin-top:.3rem;">Click to enlarge</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-2"><h6 style="font-weight:800;margin:0;color:var(--text);">Prescription #{{ rx.id }}</h6><span class="badge status-{{ rx.status }}">{{ rx.get_status_display }}</span></div>
+          <table style="font-size:.85rem;color:var(--text-muted);width:100%;">
+            <tr><td style="padding:.1rem .5rem .1rem 0;font-weight:700;color:var(--text);white-space:nowrap;">Patient:</td><td>{{ rx.user.get_full_name|default:rx.user.username }}</td></tr>
+            <tr><td style="padding:.1rem .5rem .1rem 0;font-weight:700;color:var(--text);">Doctor:</td><td>{{ rx.doctor_name|default:"—" }}</td></tr>
+            <tr><td style="padding:.1rem .5rem .1rem 0;font-weight:700;color:var(--text);">Medicine:</td><td>{{ rx.product.name|default:"General" }}</td></tr>
+            <tr><td style="padding:.1rem .5rem .1rem 0;font-weight:700;color:var(--text);">Uploaded:</td><td>{{ rx.upload_date|date:"M d, Y H:i" }}</td></tr>
+            {% if rx.notes %}<tr><td style="padding:.1rem .5rem .1rem 0;font-weight:700;color:var(--text);">Notes:</td><td>{{ rx.notes }}</td></tr>{% endif %}
+          </table>
+        </div>
+        <div class="col-md-4">
+          {% if rx.status == 'pending' %}
+          <form method="post" action="/dashboard/prescriptions/review/{{ rx.id }}/">
+            {% csrf_token %}
+            <textarea name="review_notes" class="form-control mb-2" rows="2" placeholder="Pharmacist notes (optional)…" style="font-size:.85rem;"></textarea>
+            <div class="d-flex gap-2"><button type="submit" name="action" value="approved" class="btn btn-success btn-sm flex-fill"><i class="fas fa-check me-1"></i>Approve</button><button type="submit" name="action" value="rejected" class="btn btn-danger btn-sm flex-fill"><i class="fas fa-times me-1"></i>Reject</button></div>
+          </form>
+          {% else %}
+          <div style="font-size:.85rem;color:var(--text-muted);">
+            <strong>Reviewed:</strong> {{ rx.reviewed_at|date:"M d, Y"|default:"—" }}<br>
+            {% if rx.reviewed_by %}<strong>By:</strong> {{ rx.reviewed_by.username }}<br>{% endif %}
+            {% if rx.review_notes %}<strong>Notes:</strong> {{ rx.review_notes }}{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5"><i class="fas fa-prescription" style="font-size:3.5rem;color:var(--border);"></i><h5 style="color:var(--text-muted);margin-top:1rem;">No prescriptions found</h5></div>
+    {% endfor %}
+  </div>
+</div></div></div>
+{% endblock %}

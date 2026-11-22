@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_desc %}MyMedicine — Pakistan's trusted online pharmacy for genuine medicines and healthcare products.{% endblock %}">
+  <title>{% block title %}{{ SITE_NAME }} — Trusted Online Pharmacy{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Page Loader -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-logo">{{ SITE_NAME }}</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Django Messages -->
+{% for message in messages %}
+<span data-django-message="{{ message|escapejs }}" data-django-message-type="{{ message.tags }}" style="display:none"></span>
+{% endfor %}
+
+<!-- Top Bar -->
+{% if top_bar %}
+<div class="top-bar">
+  <div class="container">
+    {{ top_bar.title }}
+    {% if top_bar.button_link %}&nbsp;<a href="{{ top_bar.button_link }}" style="color:#fff;text-decoration:underline;font-weight:700;">{{ top_bar.button_text }}</a>{% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <div class="brand-icon"><i class="fas fa-prescription-bottle-medical"></i></div>
+      <span>{{ SITE_NAME }}</span>
+    </a>
+
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain">
+      <!-- Desktop Search -->
+      <form class="d-none d-lg-flex mx-auto" style="width:340px;" action="/products/" method="get">
+        <div class="input-group" style="border-radius:24px;overflow:hidden;border:1.5px solid var(--border);background:var(--bg-muted);">
+          <input type="text" name="q" placeholder="Search medicines, brands…" class="form-control border-0 shadow-none" style="background:transparent;color:var(--text);" value="{{ request.GET.q }}">
+          <button type="submit" class="btn btn-primary border-0 px-3 shadow-none"><i class="fas fa-search"></i></button>
+        </div>
+      </form>
+
+      <ul class="navbar-nav ms-auto gap-1 align-items-lg-center">
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="/"><i class="fas fa-home me-1 d-lg-none"></i><span class="d-none d-lg-inline">Home</span><span class="d-lg-none">Home</span></a></li>
+        <li class="nav-item"><a class="nav-link {% if 'products' in request.path %}active{% endif %}" href="/products/"><i class="fas fa-capsules me-1"></i>Products</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'articles' in request.path %}active{% endif %}" href="/articles/"><i class="fas fa-newspaper me-1"></i>Articles</a></li>
+        <li class="nav-item"><a class="nav-link {% if 'about' in request.path %}active{% endif %}" href="/about/"><i class="fas fa-info-circle me-1"></i>About</a></li>
+
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link position-relative" href="/cart/" title="My Cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge" id="cartCount" {% if not cart_count %}style="display:none"{% endif %}>{{ cart_count }}</span>
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.78rem;font-weight:800;flex-shrink:0;box-shadow:0 3px 10px rgba(21,101,192,.35);">{{ user.first_name|first|upper|default:user.username|first|upper }}</div>
+            <span class="d-none d-lg-inline" style="font-size:.875rem;font-weight:600;">{{ user.first_name|default:user.username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><span class="dropdown-header"><i class="fas fa-user-circle me-1"></i>My Account</span></li>
+            <li><a class="dropdown-item" href="/accounts/profile/"><i class="fas fa-user me-2" style="color:var(--primary);width:16px;"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="/orders/my-orders/"><i class="fas fa-shopping-bag me-2" style="color:var(--primary);width:16px;"></i>My Orders</a></li>
+            <li><a class="dropdown-item" href="/my-prescriptions/"><i class="fas fa-prescription me-2" style="color:var(--primary);width:16px;"></i>Prescriptions</a></li>
+            <li><a class="dropdown-item" href="/articles/health-profile/"><i class="fas fa-heart me-2" style="color:var(--primary);width:16px;"></i>Health Profile</a></li>
+            {% if user.is_superuser or user.is_staff %}
+            <li><hr class="dropdown-divider"></li>
+            <li><span class="dropdown-header"><i class="fas fa-cog me-1"></i>Administration</span></li>
+            <li><a class="dropdown-item" href="/dashboard/"><i class="fas fa-chart-bar me-2" style="color:var(--primary);width:16px;"></i>Dashboard</a></li>
+            <li><a class="dropdown-item" href="/admin/"><i class="fas fa-tools me-2" style="color:var(--primary);width:16px;"></i>Django Admin</a></li>
+            {% endif %}
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" onclick="toggleTheme();return false;"><i id="themeIcon" class="fas fa-moon me-2" style="color:var(--primary);width:16px;"></i>Toggle Theme</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/accounts/logout/" style="color:var(--danger);"><i class="fas fa-sign-out-alt me-2" style="width:16px;"></i>Logout</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item ms-1"><a class="btn btn-outline-primary btn-sm px-3" href="/accounts/login/"><i class="fas fa-sign-in-alt me-1"></i>Login</a></li>
+        <li class="nav-item ms-1"><a class="btn btn-primary btn-sm px-3" href="/accounts/register/"><i class="fas fa-user-plus me-1"></i>Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Search -->
+<div class="d-lg-none" style="background:var(--bg-card);border-bottom:1px solid var(--border);padding:.6rem .75rem;">
+  <form action="/products/" method="get">
+    <div class="input-group" style="border-radius:20px;overflow:hidden;border:1.5px solid var(--border);background:var(--bg-muted);">
+      <input type="text" name="q" placeholder="Search medicines…" class="form-control border-0 shadow-none" style="background:transparent;color:var(--text);font-size:.85rem;" value="{{ request.GET.q }}">
+      <button type="submit" class="btn btn-primary border-0 px-3 shadow-none"><i class="fas fa-search fa-sm"></i></button>
+    </div>
+  </form>
+</div>
+
+<!-- Main -->
+<main>{% block content %}{% endblock %}</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row g-4 pb-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="brand-icon"><i class="fas fa-prescription-bottle-medical"></i></div>
+          <span style="color:#fff;font-weight:800;font-size:1.25rem;">{{ SITE_NAME }}</span>
+        </div>
+        <p style="color:rgba(255,255,255,.6);font-size:.875rem;line-height:1.75;">{{ SITE_TAGLINE }}. Genuine medicines, professional care, delivered to your door across Pakistan.</p>
+        <div class="d-flex gap-2 mt-3">
+          <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f fa-sm"></i></a>
+          <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram fa-sm"></i></a>
+          <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp fa-sm"></i></a>
+          <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter fa-sm"></i></a>
+          <a href="#" class="social-link" title="YouTube"><i class="fab fa-youtube fa-sm"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6">
+        <h5>Quick Links</h5>
+        <a href="/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Home</a>
+        <a href="/products/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>All Products</a>
+        <a href="/articles/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Health Articles</a>
+        <a href="/about/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>About Us</a>
+        <a href="/upload-prescription/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Upload Prescription</a>
+      </div>
+      <div class="col-lg-2 col-md-3 col-6">
+        <h5>My Account</h5>
+        <a href="/accounts/register/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Register</a>
+        <a href="/accounts/login/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Sign In</a>
+        <a href="/orders/my-orders/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>My Orders</a>
+        <a href="/my-prescriptions/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>Prescriptions</a>
+        <a href="/cart/"><i class="fas fa-chevron-right fa-xs me-1" style="color:var(--primary-xlight)"></i>My Cart</a>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <h5>Contact Us</h5>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <div style="display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.65);font-size:.875rem;"><i class="fas fa-envelope mt-1" style="color:var(--primary-xlight);flex-shrink:0;"></i><span>{{ SITE_EMAIL }}</span></div>
+          <div style="display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.65);font-size:.875rem;"><i class="fas fa-phone mt-1" style="color:var(--primary-xlight);flex-shrink:0;"></i><span>{{ SITE_PHONE }}</span></div>
+          <div style="display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.65);font-size:.875rem;"><i class="fas fa-clock mt-1" style="color:var(--primary-xlight);flex-shrink:0;"></i><span>Mon–Sat: 9:00 AM – 6:00 PM PKT</span></div>
+          <div style="display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.65);font-size:.875rem;"><i class="fas fa-truck mt-1" style="color:var(--primary-xlight);flex-shrink:0;"></i><span>Free delivery on orders above Rs. 2,000</span></div>
+          <div style="display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.65);font-size:.875rem;"><i class="fas fa-map-marker-alt mt-1" style="color:var(--primary-xlight);flex-shrink:0;"></i><span>Serving all major cities across Pakistan</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom text-center">
+    <div class="container">
+      <span>&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved. &nbsp;&bull;&nbsp; Genuine medicines. Professional care. &nbsp;&bull;&nbsp; Made with <i class="fas fa-heart" style="color:#f44336;"></i> in Pakistan</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Chatbot Toggle -->
+<button class="chatbot-toggle" id="chatbotToggle" title="Chat with MediBot" aria-label="Open chat assistant">
+  <i class="fas fa-comment-medical"></i>
+</button>
+
+<!-- Chatbot Window -->
+<div class="chatbot-window hidden" id="chatbotWindow">
+  <div class="chatbot-header">
+    <div class="chatbot-avatar"><i class="fas fa-robot"></i></div>
+    <div>
+      <h6 style="margin:0;font-weight:700;font-size:.95rem;">MediBot</h6>
+      <small style="opacity:.8;font-size:.72rem;"><span class="chatbot-status"></span>Online · Pharmacy Assistant</small>
+    </div>
+    <button type="button" onclick="document.getElementById('chatbotToggle').click()" class="ms-auto btn-close btn-close-white shadow-none" style="opacity:.65;" aria-label="Close chat"></button>
+  </div>
+  <div class="chatbot-messages" id="chatMessages" aria-live="polite"></div>
+  <form class="chatbot-input-row" id="chatbotForm" autocomplete="off">
+    {% csrf_token %}
+    <input type="text" id="chatInput" placeholder="Ask me anything…" aria-label="Chat message">
+    <button type="submit" class="chatbot-send" aria-label="Send"><i class="fas fa-paper-plane fa-sm"></i></button>
+  </form>
+</div>
+
+<!-- Theme Toggle -->
+<button class="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">
+  <i id="themeIcon" class="fas fa-moon"></i>
+</button>
+
+<!-- Back to Top -->
+<button class="back-top" id="backTop" title="Back to top" aria-label="Scroll to top">
+  <i class="fas fa-arrow-up fa-sm"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}MediBot — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:700px;">
+  <div class="card overflow-hidden reveal-scale" style="border-radius:var(--r-xl);box-shadow:var(--shadow-xl);">
+    <div class="chatbot-header" style="position:static;">
+      <div class="chatbot-avatar" style="width:48px;height:48px;font-size:1.3rem;"><i class="fas fa-robot"></i></div>
+      <div><h5 style="margin:0;font-weight:800;">MediBot</h5><small style="opacity:.8;"><span class="chatbot-status"></span>{{ SITE_NAME }} Pharmacy Assistant · Online</small></div>
+    </div>
+    <div id="chatMessages" class="chatbot-messages" style="height:440px;max-height:440px;" aria-live="polite"></div>
+    <form id="chatbotForm" class="chatbot-input-row" autocomplete="off">
+      {% csrf_token %}
+      <input type="text" id="chatInput" placeholder="Ask about medicines, orders, prescriptions…" aria-label="Chat message">
+      <button type="submit" class="chatbot-send" aria-label="Send"><i class="fas fa-paper-plane fa-sm"></i></button>
+    </form>
+  </div>
+  <div class="mt-4 reveal">
+    <h6 style="font-weight:800;color:var(--text);margin-bottom:.85rem;"><i class="fas fa-bolt me-2 text-primary"></i>Quick Questions</h6>
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">📦 Track my order</button>
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">↩️ Return policy</button>
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">📋 Upload prescription</button>
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">💳 Payment methods</button>
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">🚚 Delivery time</button>
+      <button class="btn btn-outline-secondary btn-sm quick-q" style="border-radius:20px;font-size:.82rem;">📞 Contact support</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.querySelectorAll('.quick-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById('chatInput');
+    if (input) {
+      input.value = btn.textContent.replace(/^[^\w]+/, '').trim();
+      document.getElementById('chatbotForm').dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}));
+    }
+  });
+});
+</script>
+{% endblock %}

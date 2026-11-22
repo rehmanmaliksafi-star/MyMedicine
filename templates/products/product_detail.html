@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/products/">Products</a></li>
+      <li class="breadcrumb-item"><a href="/products/?category={{ product.category.slug }}">{{ product.category.name }}</a></li>
+      <li class="breadcrumb-item active">{{ product.name }}</li>
+    </ol>
+  </nav>
+  <div class="row g-5">
+    <div class="col-md-5 reveal-left">
+      <div class="card overflow-hidden" style="border-radius:var(--r-lg);">
+        {% if product.image %}<img id="mainImg" src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%;aspect-ratio:1;object-fit:cover;transition:all .4s;">
+        {% else %}<div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--bg-muted);"><i class="fas fa-pills" style="font-size:5rem;color:var(--border);"></i></div>{% endif %}
+      </div>
+      {% if product.image_hover %}
+      <div class="d-flex gap-2 mt-2">
+        <img src="{{ product.image.url }}" onclick="document.getElementById('mainImg').src=this.src" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid var(--primary);transition:all .2s;" alt="">
+        <img src="{{ product.image_hover.url }}" onclick="document.getElementById('mainImg').src=this.src" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:all .2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" alt="">
+      </div>
+      {% endif %}
+    </div>
+    <div class="col-md-7 reveal-right">
+      <span class="product-category-tag" style="font-size:.8rem;padding:.3rem .85rem;">{{ product.category.name }}</span>
+      {% if product.needs_prescription %}<span style="background:rgba(244,67,54,.1);color:#b71c1c;padding:.3rem .85rem;border-radius:20px;font-size:.8rem;font-weight:700;margin-left:.5rem;"><i class="fas fa-prescription me-1"></i>Prescription Required</span>{% endif %}
+      <h1 style="font-weight:800;margin:1rem 0 .25rem;font-size:1.85rem;color:var(--text);">{{ product.name }}</h1>
+      {% if product.generic_name %}<p style="color:var(--text-muted);font-size:.9rem;margin-bottom:.25rem;">Generic: <em>{{ product.generic_name }}</em></p>{% endif %}
+      {% if product.manufacturer %}<p style="color:var(--text-muted);font-size:.875rem;margin-bottom:1rem;">By: <strong style="color:var(--text);">{{ product.manufacturer }}</strong></p>{% endif %}
+      <div class="d-flex align-items-center gap-3 mb-3">
+        <span style="font-size:2.2rem;font-weight:900;color:var(--primary);">Rs. {{ product.final_price }}</span>
+        {% if product.discount_price %}<span style="font-size:1.1rem;text-decoration:line-through;color:var(--text-light);">Rs. {{ product.price }}</span><span class="price-discount" style="font-size:.9rem;padding:.3rem .75rem;">{{ product.discount_percent }}% OFF</span>{% endif %}
+      </div>
+      <div class="mb-3">
+        {% if product.stock > 0 %}<span class="stock-badge stock-in"><i class="fas fa-check-circle me-1"></i>In Stock ({{ product.stock }} available)</span>
+        {% else %}<span class="stock-badge stock-out"><i class="fas fa-times-circle me-1"></i>Out of Stock</span>{% endif %}
+      </div>
+      {% if product.short_description %}<p style="color:var(--text-muted);border-left:3px solid var(--primary);padding-left:1rem;margin-bottom:1.5rem;line-height:1.7;">{{ product.short_description }}</p>{% endif %}
+      {% if user.is_authenticated %}
+        {% if product.stock > 0 %}
+          {% if product.needs_prescription %}
+            {% if user_has_prescription %}
+            <div class="alert alert-success mb-3"><i class="fas fa-check-circle me-2"></i>Prescription approved — you can add this to your cart.</div>
+            <div class="d-flex gap-2 mb-3">
+              <div class="qty-control"><button class="qty-btn" data-action="dec">−</button><input type="number" class="qty-input" value="1" min="1" max="{{ product.stock }}" id="qtyInput"><button class="qty-btn" data-action="inc">+</button></div>
+              <button class="btn btn-primary px-4 flex-fill" id="addToCartBtn" data-product-id="{{ product.id }}"><i class="fas fa-cart-plus me-2"></i>Add to Cart</button>
+            </div>
+            {% else %}
+            <div class="alert alert-warning mb-3"><i class="fas fa-exclamation-triangle me-2"></i><strong>Prescription Required</strong> — Upload your doctor's prescription to purchase this medicine.</div>
+            <div class="d-flex gap-2">
+              <a href="/upload-prescription/?product_id={{ product.id }}" class="btn btn-warning px-4"><i class="fas fa-upload me-2"></i>Upload Prescription</a>
+              <a href="/my-prescriptions/" class="btn btn-outline-secondary">Check Status</a>
+            </div>
+            {% endif %}
+          {% else %}
+          <div class="d-flex gap-2 mb-3">
+            <div class="qty-control"><button class="qty-btn" data-action="dec">−</button><input type="number" class="qty-input" value="1" min="1" max="{{ product.stock }}" id="qtyInput"><button class="qty-btn" data-action="inc">+</button></div>
+            <button class="btn btn-primary px-4 flex-fill btn-add-cart" data-product-id="{{ product.id }}" data-needs-rx="false"><i class="fas fa-cart-plus me-2"></i>Add to Cart</button>
+          </div>
+          {% endif %}
+        {% endif %}
+      {% else %}
+      <a href="/accounts/login/?next={{ request.path }}" class="btn btn-primary btn-lg px-5"><i class="fas fa-sign-in-alt me-2"></i>Login to Purchase</a>
+      {% endif %}
+      <div class="row g-3 mt-2">
+        <div class="col-4"><div class="card p-3 text-center"><i class="fas fa-truck" style="color:var(--primary);font-size:1.25rem;display:block;margin-bottom:.25rem;"></i><small style="color:var(--text-muted);font-size:.72rem;">Free delivery Rs.2000+</small></div></div>
+        <div class="col-4"><div class="card p-3 text-center"><i class="fas fa-undo" style="color:var(--primary);font-size:1.25rem;display:block;margin-bottom:.25rem;"></i><small style="color:var(--text-muted);font-size:.72rem;">7-day easy returns</small></div></div>
+        <div class="col-4"><div class="card p-3 text-center"><i class="fas fa-shield-alt" style="color:var(--primary);font-size:1.25rem;display:block;margin-bottom:.25rem;"></i><small style="color:var(--text-muted);font-size:.72rem;">100% authentic</small></div></div>
+      </div>
+    </div>
+  </div>
+  {% if product.description %}<div class="card mt-5 p-4 reveal"><h5 style="font-weight:800;color:var(--text);margin-bottom:1rem;"><i class="fas fa-info-circle me-2 text-primary"></i>Product Description</h5><div style="color:var(--text-muted);line-height:1.85;">{{ product.description|linebreaks }}</div></div>{% endif %}
+  {% if related_products %}
+  <div class="mt-5 reveal">
+    <div class="section-header"><span class="section-label">Related</span><h3 class="section-title">You May <span class="accent-word">Also Like</span></h3></div>
+    <div class="row g-3 stagger-children">
+      {% for rp in related_products %}
+      <div class="col-6 col-md-3">
+        <div class="product-card">
+          <a href="/products/{{ rp.slug }}/" class="text-decoration-none">
+            <div class="product-card-img">{% if rp.image %}<img src="{{ rp.image.url }}" alt="{{ rp.name }}" loading="lazy">{% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-muted);"><i class="fas fa-pills" style="font-size:2rem;color:var(--border);"></i></div>{% endif %}</div>
+          </a>
+          <div class="product-card-body"><h6 class="product-name"><a href="/products/{{ rp.slug }}/" style="color:var(--text);text-decoration:none;">{{ rp.name }}</a></h6><div class="product-price"><span class="price-current">Rs. {{ rp.final_price }}</span></div><a href="/products/{{ rp.slug }}/" class="btn-add-cart" style="display:flex;text-align:center;text-decoration:none;justify-content:center;"><i class="fas fa-eye me-1"></i>View</a></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('addToCartBtn')?.addEventListener('click', function() {
+  const qty = parseInt(document.getElementById('qtyInput')?.value || 1);
+  const fd = new FormData();
+  fd.append('product_id', this.dataset.productId);
+  fd.append('quantity', qty);
+  fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch('/cart/add/', { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest'} })
+    .then(r=>r.json())
+    .then(d=>{ if(d.status==='success'){ showToast(d.message,'success'); Cart.updateBadge(d.cart_count); }else{ showToast(d.message||'Error','error'); }})
+    .catch(()=>showToast('Network error.','error'));
+});
+</script>
+{% endblock %}

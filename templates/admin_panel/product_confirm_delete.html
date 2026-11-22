@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Delete Product — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:480px;"><div class="card p-5 text-center reveal-scale"><i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i><h4 style="font-weight:800;">Delete Product?</h4><p style="color:var(--text-muted);">Delete <strong>"{{ product.name }}"</strong>? This cannot be undone.</p><form method="post" class="d-flex gap-2 justify-content-center mt-3">{% csrf_token %}<button type="submit" class="btn btn-danger px-4"><i class="fas fa-trash me-2"></i>Delete</button><a href="/dashboard/products/" class="btn btn-outline-secondary px-4">Cancel</a></form></div></div>
+{% endblock %}

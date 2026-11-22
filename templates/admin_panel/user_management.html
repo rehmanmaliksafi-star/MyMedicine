@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Users — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="mb-4"><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">Users</h2><p style="color:var(--text-muted);margin:0;font-size:.875rem;">{{ users|length }} registered users</p></div>
+  <div class="card reveal"><div class="table-responsive"><table class="table mb-0"><thead><tr><th>User</th><th>Email</th><th>Joined</th><th>Role</th><th>Status</th></tr></thead><tbody>
+    {% for u in users %}<tr><td><div class="d-flex align-items-center gap-2"><div style="width:34px;height:34px;background:var(--grad-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.78rem;font-weight:800;flex-shrink:0;">{{ u.username|first|upper }}</div><div><div style="font-weight:700;font-size:.875rem;color:var(--text);">{{ u.get_full_name|default:u.username }}</div><div style="font-size:.72rem;color:var(--text-muted);">@{{ u.username }}</div></div></div></td><td style="font-size:.875rem;color:var(--text-muted);">{{ u.email }}</td><td style="font-size:.8rem;color:var(--text-muted);">{{ u.date_joined|date:"M d, Y" }}</td><td>{% if u.is_superuser %}<span class="badge bg-danger">Superuser</span>{% elif u.is_staff %}<span class="badge bg-warning text-dark">Staff</span>{% else %}<span class="badge bg-secondary">Customer</span>{% endif %}</td><td>{% if u.is_active %}<i class="fas fa-check-circle text-success"></i>{% else %}<i class="fas fa-times-circle text-danger"></i>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="5" class="text-center py-4" style="color:var(--text-muted);">No users found.</td></tr>{% endfor %}
+  </tbody></table></div></div>
+</div></div></div>
+{% endblock %}

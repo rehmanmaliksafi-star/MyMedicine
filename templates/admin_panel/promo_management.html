@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Promo Images — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">Promotional Images</h2><p style="color:var(--text-muted);margin:0;font-size:.875rem;">Manage homepage promotional image banners</p></div>
+    <a href="/dashboard/promo-images/add/" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Promo Image</a>
+  </div>
+  {% if promos %}
+  <div class="d-flex flex-column gap-3">
+    {% for promo in promos %}
+    <div class="card p-4 reveal">
+      <div class="row align-items-center g-3">
+        <div class="col-md-3">
+          <div style="border-radius:var(--r);overflow:hidden;position:relative;height:100px;">
+            <img src="{{ promo.image.url }}" style="width:100%;height:100%;object-fit:cover;" alt="{{ promo.title }}">
+            <div style="position:absolute;inset:0;background:{{ promo.overlay_color }};"></div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:.75rem;z-index:2;text-align:center;">
+              {% if promo.badge_text %}<span style="background:var(--accent);color:#fff;font-size:.65rem;font-weight:800;padding:.15rem .5rem;border-radius:10px;display:block;margin-bottom:.25rem;">{{ promo.badge_text }}</span>{% endif %}
+              <div style="color:{{ promo.text_color }};font-weight:800;font-size:.85rem;">{{ promo.title }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <h6 style="font-weight:800;margin:0;color:var(--text);">{{ promo.title }}</h6>
+          <div class="d-flex gap-2 flex-wrap mt-1"><span class="badge bg-secondary">{{ promo.get_position_display }}</span><span class="badge {% if promo.is_active %}bg-success{% else %}bg-secondary{% endif %}">{% if promo.is_active %}Active{% else %}Inactive{% endif %}</span><span class="badge bg-light text-dark">Order: {{ promo.order }}</span></div>
+          {% if promo.subtitle %}<div style="font-size:.8rem;color:var(--text-muted);margin-top:.3rem;">{{ promo.subtitle }}</div>{% endif %}
+          {% if promo.button_text %}<div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem;"><i class="fas fa-link me-1"></i>{{ promo.button_text }} → {{ promo.button_link }}</div>{% endif %}
+          {% if promo.start_date or promo.end_date %}<div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem;"><i class="fas fa-calendar me-1"></i>{% if promo.start_date %}From {{ promo.start_date }}{% endif %}{% if promo.end_date %} to {{ promo.end_date }}{% endif %}</div>{% endif %}
+        </div>
+        <div class="col-md-4 d-flex gap-2 justify-content-md-end flex-wrap">
+          <a href="/dashboard/promo-images/toggle/{{ promo.id }}/" class="btn btn-sm {% if promo.is_active %}btn-warning{% else %}btn-success{% endif %}"><i class="fas {% if promo.is_active %}fa-eye-slash{% else %}fa-eye{% endif %} me-1"></i>{% if promo.is_active %}Deactivate{% else %}Activate{% endif %}</a>
+          <a href="/dashboard/promo-images/edit/{{ promo.id }}/" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit me-1"></i>Edit</a>
+          <a href="/dashboard/promo-images/delete/{{ promo.id }}/" class="btn btn-sm btn-outline-danger" data-confirm="Delete '{{ promo.title }}'?"><i class="fas fa-trash me-1"></i>Delete</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5 reveal"><i class="fas fa-images" style="font-size:4rem;color:var(--border);"></i><h4 style="color:var(--text-muted);margin:1rem 0 .5rem;">No promotional images yet</h4><p style="color:var(--text-light);">Add promotional images to display on your homepage.</p><a href="/dashboard/promo-images/add/" class="btn btn-primary mt-2"><i class="fas fa-plus me-2"></i>Add First Promo Image</a></div>
+  {% endif %}
+</div></div></div>
+{% endblock %}

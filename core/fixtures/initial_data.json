@@ -1,0 +1,15 @@
+[
+  {"model":"core.category","pk":1,"fields":{"name":"Pain Relief","slug":"pain-relief","description":"Analgesics and pain management","icon":"fa-pills","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":2,"fields":{"name":"Vitamins & Supplements","slug":"vitamins-supplements","description":"Daily health supplements","icon":"fa-capsules","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":3,"fields":{"name":"Antibiotics","slug":"antibiotics","description":"Prescription antibiotics","icon":"fa-prescription-bottle","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":4,"fields":{"name":"Skincare","slug":"skincare","description":"Dermatology and skincare","icon":"fa-spa","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":5,"fields":{"name":"Baby Care","slug":"baby-care","description":"Infant and toddler healthcare","icon":"fa-baby","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":6,"fields":{"name":"Diabetes Care","slug":"diabetes-care","description":"Glucose monitors and diabetic supplies","icon":"fa-syringe","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":7,"fields":{"name":"Heart & BP","slug":"heart-bp","description":"Cardiovascular medicines","icon":"fa-heart","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.category","pk":8,"fields":{"name":"Medical Devices","slug":"medical-devices","description":"BP monitors, thermometers, etc.","icon":"fa-stethoscope","created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"core.promotionalbanner","pk":1,"fields":{"title":"FREE Delivery on Orders Above Rs. 2,000 — Order Now!","subtitle":"","image":null,"background_color":"#1565c0","text_color":"#ffffff","button_text":"Shop Now","button_link":"/products/","banner_type":"top_bar","is_active":true,"order":0,"start_date":null,"end_date":null,"created_at":"2024-01-01T00:00:00Z"}},
+  {"model":"chatbot.faq","pk":1,"fields":{"question":"What is your delivery time?","answer":"We deliver across Pakistan in 3-5 business days. FREE delivery on orders above Rs. 2,000!","keywords":"delivery,ship,track,arrive,time,how long,when","is_active":true,"order":1}},
+  {"model":"chatbot.faq","pk":2,"fields":{"question":"How do I return a product?","answer":"Return unopened products within 7 days. Email support@mymedicine.pk with your order number and reason.","keywords":"return,refund,exchange,money back,wrong,damaged","is_active":true,"order":2}},
+  {"model":"chatbot.faq","pk":3,"fields":{"question":"How does prescription upload work?","answer":"Upload your prescription at /upload-prescription/ — our pharmacist reviews it within 24 hours. Check status at /my-prescriptions/","keywords":"prescription,rx,doctor,upload,approved,medicine","is_active":true,"order":3}},
+  {"model":"chatbot.faq","pk":4,"fields":{"question":"What payment methods do you accept?","answer":"We accept Cash on Delivery across Pakistan, and simulated card payment in our demo mode.","keywords":"payment,pay,cash,card,how to pay,method","is_active":true,"order":4}}
+]

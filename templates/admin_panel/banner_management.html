@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Banners — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="d-flex justify-content-between align-items-center mb-4"><div><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">Promotional Banners</h2><p style="color:var(--text-muted);margin:0;font-size:.875rem;">Text-based announcement banners</p></div><a href="/dashboard/banners/add/" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Banner</a></div>
+  <form method="get" class="mb-4"><div class="input-group" style="max-width:380px;"><input type="text" name="q" class="form-control" placeholder="Search banners…" value="{{ q }}"><button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>{% if q %}<a href="/dashboard/banners/" class="btn btn-outline-secondary">Clear</a>{% endif %}</div></form>
+  {% if banners %}
+  <div class="d-flex flex-column gap-3">
+    {% for banner in banners %}
+    <div class="card p-4 reveal">
+      <div class="row align-items-center g-3">
+        <div class="col-md-3"><div class="rounded-2 p-3 text-center" style="background:{{ banner.background_color }};"><div style="color:{{ banner.text_color }};font-weight:800;font-size:.85rem;">{{ banner.title }}</div>{% if banner.subtitle %}<div style="color:{{ banner.text_color }};opacity:.8;font-size:.72rem;margin-top:.2rem;">{{ banner.subtitle }}</div>{% endif %}</div></div>
+        <div class="col-md-5"><h6 style="font-weight:800;margin:0;color:var(--text);">{{ banner.title }}</h6><div class="d-flex gap-2 flex-wrap mt-1"><span class="badge bg-secondary">{{ banner.get_banner_type_display }}</span><span class="badge {% if banner.is_active %}bg-success{% else %}bg-secondary{% endif %}">{% if banner.is_active %}Active{% else %}Inactive{% endif %}</span></div></div>
+        <div class="col-md-4 d-flex gap-2 justify-content-md-end flex-wrap">
+          <a href="/dashboard/banners/toggle/{{ banner.id }}/" class="btn btn-sm {% if banner.is_active %}btn-warning{% else %}btn-success{% endif %}"><i class="fas {% if banner.is_active %}fa-eye-slash{% else %}fa-eye{% endif %} me-1"></i>{% if banner.is_active %}Off{% else %}On{% endif %}</a>
+          <a href="/dashboard/banners/edit/{{ banner.id }}/" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
+          <a href="/dashboard/banners/delete/{{ banner.id }}/" class="btn btn-sm btn-outline-danger" data-confirm="Delete '{{ banner.title }}'?"><i class="fas fa-trash"></i></a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}<div class="text-center py-5 reveal"><i class="fas fa-bullhorn" style="font-size:3.5rem;color:var(--border);"></i><h4 style="color:var(--text-muted);margin-top:1rem;">No banners yet</h4><a href="/dashboard/banners/add/" class="btn btn-primary mt-2"><i class="fas fa-plus me-2"></i>Create First Banner</a></div>{% endif %}
+</div></div></div>
+{% endblock %}

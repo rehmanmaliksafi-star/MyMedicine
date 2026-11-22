@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ article.title }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container my-5" style="max-width:860px;">
+  <nav aria-label="breadcrumb" class="mb-4 reveal"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="/">Home</a></li><li class="breadcrumb-item"><a href="/articles/">Articles</a></li><li class="breadcrumb-item active">{{ article.title }}</li></ol></nav>
+  <span style="font-size:.75rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.07em;background:var(--primary-50);padding:.25rem .75rem;border-radius:12px;" class="reveal">{{ article.category }}</span>
+  <h1 style="font-weight:900;color:var(--text);margin:.75rem 0;line-height:1.25;" class="reveal">{{ article.title }}</h1>
+  <div class="d-flex gap-3 align-items-center mb-4 reveal" style="color:var(--text-muted);font-size:.875rem;">
+    <span><i class="fas fa-user-md me-1"></i>{{ article.author.get_full_name|default:article.author.username }}</span>
+    <span><i class="fas fa-calendar me-1"></i>{{ article.created_at|date:"M d, Y" }}</span>
+    <span><i class="fas fa-eye me-1"></i>{{ article.views }} views</span>
+  </div>
+  {% if article.featured_image %}<img src="{{ article.featured_image.url }}" style="width:100%;border-radius:var(--r-xl);max-height:420px;object-fit:cover;margin-bottom:2rem;box-shadow:var(--shadow-lg);" alt="{{ article.title }}" class="reveal">{% endif %}
+  <div class="card p-4 p-md-5 reveal" style="line-height:1.9;color:var(--text-muted);">{{ article.content|linebreaks }}</div>
+  {% if article.recommended_products.all %}
+  <div class="mt-4 reveal">
+    <h5 style="font-weight:800;color:var(--text);margin-bottom:1rem;"><i class="fas fa-prescription-bottle me-2 text-primary"></i>Recommended Products</h5>
+    <div class="row g-3">
+      {% for p in article.recommended_products.all %}<div class="col-md-4"><div class="card p-3 d-flex flex-row align-items-center gap-3">{% if p.image %}<img src="{{ p.image.url }}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="">{% endif %}<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:.875rem;color:var(--text);">{{ p.name }}</div><div style="color:var(--primary);font-weight:800;font-size:.875rem;">Rs. {{ p.final_price }}</div></div><a href="/products/{{ p.slug }}/" class="btn btn-primary btn-sm flex-shrink-0"><i class="fas fa-eye"></i></a></div></div>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  <div class="mt-4"><a href="/articles/" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>All Articles</a></div>
+</div>
+{% endblock %}

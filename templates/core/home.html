@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ SITE_NAME }} — Trusted Online Pharmacy Pakistan{% endblock %}
+{% block content %}
+
+<!-- Hero Carousel -->
+{% if hero_images %}
+<section class="hero-section">
+  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5500">
+    <div class="carousel-inner">
+      {% for hero in hero_images %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="hero-slide">
+          <div class="hero-particles">
+            <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+            <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+          </div>
+          {% if hero.image %}<img src="{{ hero.image.url }}" alt="{{ hero.title }}" class="hero-bg-parallax">{% endif %}
+          <div class="container">
+            <div class="hero-content">
+              {% if hero.title %}<h1 class="hero-title" style="animation:fadeInLeft .8s ease both;">{{ hero.title }}</h1>{% endif %}
+              {% if hero.subtitle %}<p class="hero-subtitle" style="animation:fadeInLeft .8s .2s ease both;">{{ hero.subtitle }}</p>{% endif %}
+              <div class="d-flex gap-3 flex-wrap" style="animation:fadeInUp .8s .4s ease both;">
+                {% if hero.button_text %}<a href="{{ hero.button_link }}" class="btn btn-light btn-lg">{{ hero.button_text }} <i class="fas fa-arrow-right ms-2"></i></a>{% endif %}
+                <a href="/upload-prescription/" class="btn btn-outline-light btn-lg"><i class="fas fa-prescription me-2"></i>Upload Prescription</a>
+              </div>
+            </div>
+          </div>
+          <div class="hero-float-card">
+            <div class="stat-num">10K+</div><div class="stat-label">Happy Patients</div>
+            <div class="stat-num mt-2" style="font-size:1.5rem;">500+</div><div class="stat-label">Medicines</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if hero_images|length > 1 %}
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+    <div class="carousel-indicators">{% for h in hero_images %}<button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>{% endfor %}</div>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<section class="hero-slide" style="min-height:500px;">
+  <div class="hero-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title" style="animation:fadeInLeft .8s ease both;">
+        Your Health,<br><span class="highlight">Our Priority</span>
+      </h1>
+      <p class="hero-subtitle" style="animation:fadeInLeft .8s .2s ease both;">Genuine medicines and healthcare products delivered to your door across Pakistan. Fast, safe, and reliable.</p>
+      <div class="d-flex gap-3 flex-wrap" style="animation:fadeInUp .8s .4s ease both;">
+        <a href="/products/" class="btn btn-light btn-lg px-5">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+        <a href="/upload-prescription/" class="btn btn-outline-light btn-lg px-5"><i class="fas fa-prescription me-2"></i>Upload Rx</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-float-card">
+    <div class="stat-num" data-count="10000" data-suffix="+">0+</div>
+    <div class="stat-label">Happy Patients</div>
+    <div class="stat-num mt-2" style="font-size:1.5rem;" data-count="500" data-suffix="+">0+</div>
+    <div class="stat-label">Products</div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Trust Strip -->
+<section class="trust-strip reveal">
+  <div class="container">
+    <div class="row g-2">
+      <div class="col-6 col-md-3"><div class="trust-item"><i class="fas fa-shield-alt"></i><span>100% Genuine Medicines</span></div></div>
+      <div class="col-6 col-md-3"><div class="trust-item"><i class="fas fa-truck"></i><span>Free Delivery Rs.2000+</span></div></div>
+      <div class="col-6 col-md-3"><div class="trust-item"><i class="fas fa-user-md"></i><span>Licensed Pharmacists</span></div></div>
+      <div class="col-6 col-md-3"><div class="trust-item"><i class="fas fa-undo"></i><span>7-Day Easy Returns</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Promotional Images Section -->
+{% if promo_images %}
+<section class="container my-5">
+  <div class="section-header reveal">
+    <span class="section-label"><i class="fas fa-fire me-1"></i>Hot Deals</span>
+    <h2 class="section-title">Special <span class="accent-word">Promotions</span></h2>
+    <p class="section-subtitle">Exclusive offers curated just for you</p>
+  </div>
+
+  {% with full_promos=promo_images|slice:":3" %}
+  {% if full_promos %}
+  <div class="row g-3 stagger-children">
+    {% for promo in promo_images %}
+    {% if promo.position == 'full' %}
+    <div class="col-12 reveal">
+      <div class="promo-banner promo-full">
+        <img src="{{ promo.image.url }}" alt="{{ promo.title }}" loading="lazy">
+        <div class="promo-banner-overlay" style="background:{{ promo.overlay_color }};"></div>
+        <div class="promo-banner-content">
+          {% if promo.badge_text %}<div class="promo-banner-badge">{{ promo.badge_text }}</div>{% endif %}
+          <h3 class="promo-banner-title" style="color:{{ promo.text_color }};">{{ promo.title }}</h3>
+          {% if promo.subtitle %}<p class="promo-banner-sub" style="color:{{ promo.text_color }};">{{ promo.subtitle }}</p>{% endif %}
+          {% if promo.button_text %}<a href="{{ promo.button_link }}" class="btn btn-light px-4">{{ promo.button_text }} <i class="fas fa-arrow-right ms-2"></i></a>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    {% comment %}Half and Third width promos{% endcomment %}
+    {% with half_promos=promo_images %}
+    <div class="col-12">
+      <div class="row g-3">
+        {% for promo in promo_images %}
+        {% if promo.position == 'half_left' or promo.position == 'half_right' %}
+        <div class="col-md-6 reveal">
+          <div class="promo-banner promo-half">
+            <img src="{{ promo.image.url }}" alt="{{ promo.title }}" loading="lazy">
+            <div class="promo-banner-overlay" style="background:{{ promo.overlay_color }};"></div>
+            <div class="promo-banner-content">
+              {% if promo.badge_text %}<div class="promo-banner-badge">{{ promo.badge_text }}</div>{% endif %}
+              <h4 class="promo-banner-title" style="color:{{ promo.text_color }};font-size:1.4rem;">{{ promo.title }}</h4>
+              {% if promo.subtitle %}<p class="promo-banner-sub" style="color:{{ promo.text_color }};">{{ promo.subtitle }}</p>{% endif %}
+              {% if promo.button_text %}<a href="{{ promo.button_link }}" class="btn btn-light btn-sm px-3">{{ promo.button_text }}</a>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% if promo.position == 'third' %}
+        <div class="col-md-4 reveal">
+          <div class="promo-banner promo-third">
+            <img src="{{ promo.image.url }}" alt="{{ promo.title }}" loading="lazy">
+            <div class="promo-banner-overlay" style="background:{{ promo.overlay_color }};"></div>
+            <div class="promo-banner-content">
+              {% if promo.badge_text %}<div class="promo-banner-badge">{{ promo.badge_text }}</div>{% endif %}
+              <h5 class="promo-banner-title" style="color:{{ promo.text_color }};font-size:1.2rem;">{{ promo.title }}</h5>
+              {% if promo.button_text %}<a href="{{ promo.button_link }}" class="btn btn-light btn-sm px-3 mt-1">{{ promo.button_text }}</a>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endwith %}
+  </div>
+  {% endif %}
+  {% endwith %}
+</section>
+{% endif %}
+
+<!-- Categories -->
+{% if categories %}
+<section class="container my-5">
+  <div class="d-flex align-items-end justify-content-between mb-4 reveal">
+    <div>
+      <span class="section-label"><i class="fas fa-th me-1"></i>Browse</span>
+      <h2 class="section-title">Shop by <span class="accent-word">Category</span></h2>
+    </div>
+    <a href="/products/" class="btn btn-outline-primary btn-sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
+  </div>
+  <div class="row g-3 stagger-children">
+    {% for cat in categories %}
+    <div class="col-6 col-md-3 col-lg-2 reveal">
+      <a href="/products/?category={{ cat.slug }}" class="category-card text-decoration-none">
+        <div class="category-card-icon"><i class="fas {{ cat.icon|default:'fa-pills' }}"></i></div>
+        <div class="category-card-name">{{ cat.name }}</div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="container my-5">
+  <div class="d-flex align-items-end justify-content-between mb-4 reveal">
+    <div>
+      <span class="section-label"><i class="fas fa-star me-1"></i>Recommended</span>
+      <h2 class="section-title">Featured <span class="accent-word">Products</span></h2>
+    </div>
+    <a href="/products/" class="btn btn-outline-primary btn-sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
+  </div>
+  <div class="row g-3 stagger-children">
+    {% for product in featured_products %}
+    <div class="col-6 col-md-4 col-lg-3 reveal">
+      <div class="product-card">
+        <a href="/products/{{ product.slug }}/" class="text-decoration-none">
+          <div class="product-card-img">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-main" loading="lazy">{% if product.image_hover %}<img src="{{ product.image_hover.url }}" alt="{{ product.name }}" class="img-hover" loading="lazy">{% endif %}
+            {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg-muted);"><i class="fas fa-pills" style="font-size:3rem;color:var(--border);"></i></div>{% endif %}
+            {% if product.needs_prescription %}<span class="product-badge badge-rx"><i class="fas fa-prescription me-1"></i>Rx</span>{% endif %}
+            {% if product.discount_percent %}<span class="product-badge badge-sale">-{{ product.discount_percent }}%</span>{% endif %}
+            {% if product.is_featured and not product.needs_prescription %}<span class="product-badge badge-new" style="left:auto;right:10px;">New</span>{% endif %}
+            <div class="product-card-overlay">
+              <a href="/products/{{ product.slug }}/" class="quick-btn" title="View Details" onclick="event.stopPropagation()"><i class="fas fa-eye"></i></a>
+            </div>
+          </div>
+        </a>
+        <div class="product-card-body">
+          <span class="product-category-tag">{{ product.category.name }}</span>
+          <h6 class="product-name"><a href="/products/{{ product.slug }}/" style="color:var(--text);text-decoration:none;">{{ product.name }}</a></h6>
+          {% if product.manufacturer %}<p class="product-mfr">{{ product.manufacturer }}</p>{% endif %}
+          <div class="product-price">
+            <span class="price-current">Rs. {{ product.final_price }}</span>
+            {% if product.discount_price %}<span class="price-original">Rs. {{ product.price }}</span><span class="price-discount">{{ product.discount_percent }}% OFF</span>{% endif %}
+          </div>
+          {% if product.stock > 0 %}
+          <button class="btn-add-cart {% if product.needs_prescription %}rx-required{% endif %}" data-product-id="{{ product.id }}" data-needs-rx="{{ product.needs_prescription|lower }}">
+            {% if product.needs_prescription %}<i class="fas fa-prescription"></i> Requires Prescription{% else %}<i class="fas fa-cart-plus"></i> Add to Cart{% endif %}
+          </button>
+          {% else %}
+          <button class="btn-add-cart" disabled style="background:var(--text-light);cursor:not-allowed;"><i class="fas fa-times-circle"></i> Out of Stock</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Stats Section -->
+<section style="background:var(--bg-muted);padding:4rem 0;margin:2rem 0;" class="reveal">
+  <div class="container">
+    <div class="row g-4 stagger-children text-center">
+      <div class="col-6 col-md-3 reveal">
+        <div class="stat-chip">
+          <div class="stat-number" data-count="10000" data-suffix="+">0+</div>
+          <div class="stat-label">Happy Patients</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal">
+        <div class="stat-chip">
+          <div class="stat-number" data-count="500" data-suffix="+">0+</div>
+          <div class="stat-label">Products</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal">
+        <div class="stat-chip">
+          <div class="stat-number" data-count="50" data-suffix="+">0+</div>
+          <div class="stat-label">Cities Served</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 reveal">
+        <div class="stat-chip">
+          <div class="stat-number" data-count="24" data-suffix="h">0h</div>
+          <div class="stat-label">Rx Review Time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="container my-5">
+  <div class="text-center mb-5 reveal">
+    <span class="section-label"><i class="fas fa-award me-1"></i>Our Promise</span>
+    <h2 class="section-title">Why Choose <span class="accent-word">{{ SITE_NAME }}</span>?</h2>
+    <p class="section-subtitle">Pakistan's most trusted online pharmacy</p>
+  </div>
+  <div class="row g-4 stagger-children">
+    {% for icon,color,title,desc in "fa-shield-alt,#1565c0,100% Authentic,Every product sourced directly from licensed manufacturers. Zero counterfeit. Always genuine.|fa-user-md,#0077b6,Expert Pharmacists,Licensed pharmacists review every prescription and are available for consultation.|fa-truck,#00b0ff,Fast Delivery,3-5 business day delivery. Free shipping on orders above Rs. 2000 anywhere in Pakistan.|fa-prescription,#0091ea,Easy Prescriptions,Upload your prescription online. Reviewed and approved within 24 hours by our pharmacist." %}{% endfor %}
+    <div class="col-md-6 col-lg-3 reveal">
+      <div class="card p-4 text-center h-100">
+        <div style="width:72px;height:72px;background:var(--primary-50);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;transition:all .3s;" onmouseover="this.style.background='var(--primary)';this.querySelector('i').style.color='#fff'" onmouseout="this.style.background='var(--primary-50)';this.querySelector('i').style.color='var(--primary)'">
+          <i class="fas fa-shield-alt fa-xl" style="color:var(--primary);transition:all .3s;"></i>
+        </div>
+        <h5 style="color:var(--text);font-weight:800;">100% Authentic</h5>
+        <p style="color:var(--text-muted);font-size:.875rem;line-height:1.7;">Every product sourced directly from licensed manufacturers and verified distributors. Zero counterfeit, always genuine.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3 reveal">
+      <div class="card p-4 text-center h-100">
+        <div style="width:72px;height:72px;background:var(--primary-50);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;transition:all .3s;" onmouseover="this.style.background='var(--primary)';this.querySelector('i').style.color='#fff'" onmouseout="this.style.background='var(--primary-50)';this.querySelector('i').style.color='var(--primary)'">
+          <i class="fas fa-user-md fa-xl" style="color:var(--primary);transition:all .3s;"></i>
+        </div>
+        <h5 style="color:var(--text);font-weight:800;">Expert Pharmacists</h5>
+        <p style="color:var(--text-muted);font-size:.875rem;line-height:1.7;">Licensed pharmacists review every prescription and are available for your healthcare consultations and queries.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3 reveal">
+      <div class="card p-4 text-center h-100">
+        <div style="width:72px;height:72px;background:var(--primary-50);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;transition:all .3s;" onmouseover="this.style.background='var(--primary)';this.querySelector('i').style.color='#fff'" onmouseout="this.style.background='var(--primary-50)';this.querySelector('i').style.color='var(--primary)'">
+          <i class="fas fa-truck fa-xl" style="color:var(--primary);transition:all .3s;"></i>
+        </div>
+        <h5 style="color:var(--text);font-weight:800;">Fast Delivery</h5>
+        <p style="color:var(--text-muted);font-size:.875rem;line-height:1.7;">3–5 business day delivery across Pakistan. Free shipping on all orders above Rs. 2,000. Discreet packaging.</p>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3 reveal">
+      <div class="card p-4 text-center h-100">
+        <div style="width:72px;height:72px;background:var(--primary-50);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;transition:all .3s;" onmouseover="this.style.background='var(--primary)';this.querySelector('i').style.color='#fff'" onmouseout="this.style.background='var(--primary-50)';this.querySelector('i').style.color='var(--primary)'">
+          <i class="fas fa-lock fa-xl" style="color:var(--primary);transition:all .3s;"></i>
+        </div>
+        <h5 style="color:var(--text);font-weight:800;">Secure & Private</h5>
+        <p style="color:var(--text-muted);font-size:.875rem;line-height:1.7;">Your health data and personal information is protected with encryption. We never share your details.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="container my-5 reveal">
+  <div class="card p-4 p-md-5 text-center" style="background:var(--grad-hero);border:none;border-radius:var(--r-2xl);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-30px;right:-30px;width:200px;height:200px;background:rgba(255,255,255,.05);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-50px;left:-20px;width:150px;height:150px;background:rgba(255,255,255,.04);border-radius:50%;"></div>
+    <div style="position:relative;z-index:1;">
+      <i class="fas fa-envelope-open-heart" style="font-size:2.5rem;color:#90caf9;margin-bottom:1rem;display:block;animation:float 3s ease-in-out infinite;"></i>
+      <h3 style="color:#fff;font-weight:800;margin-bottom:.5rem;">Stay Healthy. Stay Updated.</h3>
+      <p style="color:rgba(255,255,255,.8);margin-bottom:1.75rem;">Get health tips, exclusive deals, and pharmacy news delivered to your inbox weekly.</p>
+      <form class="d-flex gap-2 justify-content-center flex-wrap" onsubmit="showToast('Thank you! You\'re now subscribed.','success');return false;">
+        <input type="email" placeholder="Enter your email address" class="form-control" style="max-width:320px;border-radius:24px;padding:.7rem 1.25rem;border:none;font-family:Poppins,sans-serif;" required>
+        <button type="submit" class="btn btn-shimmer px-5" style="border-radius:24px;"><i class="fas fa-paper-plane me-2"></i>Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

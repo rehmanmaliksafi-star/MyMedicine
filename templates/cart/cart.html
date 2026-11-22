@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}My Cart — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-shopping-cart me-2"></i>My Cart</h1><p>{{ item_count }} item{% if item_count != 1 %}s{% endif %} in your cart</p></div></div>
+<div class="container mb-5">
+  {% if cart_items %}
+  <div class="row g-4">
+    <div class="col-lg-8">
+      {% if not free_shipping %}
+      <div class="card p-3 mb-3" style="border-left:4px solid var(--primary);">
+        <div class="d-flex justify-content-between mb-2"><span style="font-size:.875rem;font-weight:600;color:var(--text);">🚚 Add <strong>Rs. {{ free_shipping_remaining }}</strong> more for FREE delivery!</span><span style="font-size:.78rem;color:var(--text-muted);">Rs. {{ subtotal }} / Rs. 2,000</span></div>
+        <div class="progress"><div class="progress-bar" style="width:{% widthratio subtotal 2000 100 %}%;"></div></div>
+      </div>
+      {% else %}<div class="alert alert-success mb-3"><i class="fas fa-check-circle me-2"></i>You qualify for <strong>FREE delivery</strong>!</div>{% endif %}
+      {% for item in cart_items %}
+      <div class="cart-item">
+        {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-img">
+        {% else %}<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;"><i class="fas fa-pills" style="font-size:1.5rem;color:var(--border);"></i></div>{% endif %}
+        <div style="flex:1;min-width:0;">
+          <a href="/products/{{ item.product.slug }}/" style="color:var(--text);font-weight:700;font-size:.9rem;display:block;margin-bottom:.2rem;">{{ item.product.name }}</a>
+          <p style="color:var(--text-muted);font-size:.8rem;margin:0;">{{ item.product.category.name }}</p>
+          {% if item.product.needs_prescription %}<span style="font-size:.7rem;background:rgba(244,67,54,.1);color:#b71c1c;padding:.15rem .5rem;border-radius:4px;"><i class="fas fa-prescription me-1"></i>Rx</span>{% endif %}
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn" data-action="dec">−</button>
+          <input type="number" class="qty-input" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" data-item-id="{{ item.id }}" data-price="{{ item.product.final_price }}">
+          <button class="qty-btn" data-action="inc">+</button>
+        </div>
+        <div style="text-align:right;min-width:90px;"><strong id="item-total-{{ item.id }}" style="color:var(--primary);font-weight:800;">Rs. {{ item.get_total }}</strong><div style="font-size:.75rem;color:var(--text-muted);">Rs. {{ item.product.final_price }} each</div></div>
+        <a href="/cart/remove/{{ item.id }}/" style="color:var(--danger);" data-confirm="Remove {{ item.product.name }}?"><i class="fas fa-trash-alt"></i></a>
+      </div>
+      {% endfor %}
+      <div class="d-flex justify-content-between mt-3">
+        <a href="/products/" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Continue Shopping</a>
+        <a href="/cart/clear/" class="btn btn-outline-danger" data-confirm="Clear your entire cart?"><i class="fas fa-trash me-2"></i>Clear Cart</a>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card p-4 sticky-top" style="top:80px;">
+        <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Order Summary</h5>
+        <div class="d-flex justify-content-between mb-2" style="font-size:.9rem;color:var(--text-muted);"><span>Subtotal ({{ item_count }} items)</span><span style="color:var(--text);">Rs. {{ subtotal }}</span></div>
+        <div class="d-flex justify-content-between mb-2" style="font-size:.9rem;color:var(--text-muted);"><span>Shipping</span><span style="color:{% if free_shipping %}var(--success){% else %}var(--text){% endif %};">{% if free_shipping %}<i class="fas fa-gift me-1"></i>FREE{% else %}Rs. {{ shipping }}{% endif %}</span></div>
+        <hr style="border-color:var(--border);">
+        <div class="d-flex justify-content-between mb-3"><strong style="font-size:1.05rem;color:var(--text);">Total</strong><strong id="cartTotal" style="font-size:1.35rem;color:var(--primary);">Rs. {{ total }}</strong></div>
+        <a href="/orders/checkout/" class="btn btn-primary btn-lg w-100"><i class="fas fa-lock me-2"></i>Secure Checkout</a>
+        <p style="color:var(--text-muted);font-size:.75rem;text-align:center;margin-top:.75rem;"><i class="fas fa-shield-alt me-1 text-success"></i>SSL encrypted · 100% secure</p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="text-center py-5">
+    <div style="width:100px;height:100px;background:var(--primary-50);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;"><i class="fas fa-shopping-cart" style="font-size:2.5rem;color:var(--primary);"></i></div>
+    <h3 style="color:var(--text-muted);margin-bottom:.5rem;">Your cart is empty</h3>
+    <p style="color:var(--text-light);">Browse our products and add items to your cart.</p>
+    <a href="/products/" class="btn btn-primary btn-lg mt-2 px-5"><i class="fas fa-capsules me-2"></i>Shop Now</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

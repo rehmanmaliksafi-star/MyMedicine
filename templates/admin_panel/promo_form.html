@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Promo Image — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="mb-4"><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">{{ action }} Promotional Image</h2></div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card p-4 mb-3 reveal">
+          <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Content</h5>
+          <div class="row g-3">
+            <div class="col-12"><label class="form-label">Title *</label><input type="text" name="title" class="form-control" required value="{{ promo.title|default:'' }}" placeholder="e.g. Summer Health Sale — 30% Off!"></div>
+            <div class="col-12"><label class="form-label">Subtitle</label><input type="text" name="subtitle" class="form-control" value="{{ promo.subtitle|default:'' }}" placeholder="Supporting description line"></div>
+            <div class="col-md-4"><label class="form-label">Badge Text</label><input type="text" name="badge_text" class="form-control" value="{{ promo.badge_text|default:'' }}" placeholder="e.g. SALE or NEW"></div>
+            <div class="col-md-4"><label class="form-label">Button Text</label><input type="text" name="button_text" class="form-control" value="{{ promo.button_text|default:'Shop Now' }}"></div>
+            <div class="col-md-4"><label class="form-label">Button Link</label><input type="text" name="button_link" class="form-control" value="{{ promo.button_link|default:'/products/' }}"></div>
+            <div class="col-12">
+              <label class="form-label">Promo Image * <span style="color:var(--text-muted);font-weight:400;font-size:.8rem;">(Full width: 1200×500px | Half: 600×500px)</span></label>
+              <input type="file" name="image" class="form-control" {% if not promo %}required{% endif %} accept="image/*" data-preview="promoPreview" data-label="promoFileName">
+              {% if promo and promo.image %}<div class="mt-2"><img src="{{ promo.image.url }}" style="height:80px;border-radius:8px;border:1px solid var(--border);" alt=""><span style="font-size:.75rem;color:var(--text-muted);margin-left:.5rem;">Current image</span></div>{% endif %}
+              <img id="promoPreview" src="" alt="" style="display:none;max-height:160px;margin-top:.75rem;border-radius:var(--r);border:1px solid var(--border);">
+              <div id="promoFileName" style="font-size:.8rem;color:var(--text-muted);margin-top:.4rem;font-weight:600;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4 mb-3 reveal">
+          <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Display Settings</h5>
+          <div class="mb-3"><label class="form-label">Position / Size</label><select name="position" class="form-select">{% for val,label in position_choices %}<option value="{{ val }}" {% if promo and promo.position == val %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="mb-3"><label class="form-label">Overlay Color <span style="font-size:.75rem;color:var(--text-muted);">CSS rgba</span></label><input type="text" name="overlay_color" class="form-control" value="{{ promo.overlay_color|default:'rgba(13,71,161,0.55)' }}" placeholder="rgba(13,71,161,0.55)"></div>
+          <div class="mb-3"><label class="form-label">Text Color</label><div class="d-flex gap-2"><input type="color" name="text_color" class="form-control form-control-color" value="{{ promo.text_color|default:'#ffffff' }}" style="width:55px;"><input type="text" class="form-control" value="{{ promo.text_color|default:'#ffffff' }}" placeholder="#ffffff"></div></div>
+          <div class="mb-3"><label class="form-label">Display Order</label><input type="number" name="order" class="form-control" value="{{ promo.order|default:0 }}" min="0"></div>
+          <div class="mb-3"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control" value="{{ promo.start_date|default:'' }}"></div>
+          <div class="mb-3"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control" value="{{ promo.end_date|default:'' }}"></div>
+          <div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_active" id="isActive" {% if not promo or promo.is_active %}checked{% endif %}><label class="form-check-label fw-semibold" for="isActive">Active (visible on site)</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-2"><button type="submit" class="btn btn-primary px-5"><i class="fas fa-save me-2"></i>Save Promo Image</button><a href="/dashboard/promo-images/" class="btn btn-outline-secondary px-4">Cancel</a></div>
+  </form>
+</div></div></div>
+{% endblock %}

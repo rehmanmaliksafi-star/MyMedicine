@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Product — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="mb-4"><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">{{ action }} Product</h2></div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card p-4 mb-3 reveal">
+          <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Basic Information</h5>
+          <div class="row g-3">
+            <div class="col-md-8"><label class="form-label">Product Name *</label><input type="text" name="name" class="form-control" required value="{{ product.name|default:'' }}"></div>
+            <div class="col-md-4"><label class="form-label">Category *</label><select name="category" class="form-select" required><option value="">-- Select --</option>{% for cat in categories %}<option value="{{ cat.id }}" {% if product and product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}</select></div>
+            <div class="col-md-6"><label class="form-label">Generic Name</label><input type="text" name="generic_name" class="form-control" value="{{ product.generic_name|default:'' }}"></div>
+            <div class="col-md-6"><label class="form-label">Manufacturer</label><input type="text" name="manufacturer" class="form-control" value="{{ product.manufacturer|default:'' }}"></div>
+            <div class="col-md-4"><label class="form-label">Price (Rs.) *</label><input type="number" name="price" class="form-control" step="0.01" required value="{{ product.price|default:'' }}"></div>
+            <div class="col-md-4"><label class="form-label">Discount Price</label><input type="number" name="discount_price" class="form-control" step="0.01" value="{{ product.discount_price|default:'' }}"></div>
+            <div class="col-md-4"><label class="form-label">Stock Qty</label><input type="number" name="stock" class="form-control" value="{{ product.stock|default:0 }}"></div>
+            <div class="col-12"><label class="form-label">Short Description</label><input type="text" name="short_description" class="form-control" value="{{ product.short_description|default:'' }}" placeholder="One-line product summary"></div>
+            <div class="col-12"><label class="form-label">Full Description</label><textarea name="description" class="form-control" rows="4">{{ product.description|default:'' }}</textarea></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4 mb-3 reveal">
+          <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Settings</h5>
+          <div class="mb-3"><label class="form-label">Prescription Required</label><select name="prescription_required" class="form-select"><option value="not_required" {% if product and product.prescription_required == 'not_required' %}selected{% endif %}>Not Required</option><option value="required" {% if product and product.prescription_required == 'required' %}selected{% endif %}>Required</option><option value="optional" {% if product and product.prescription_required == 'optional' %}selected{% endif %}>Optional</option></select></div>
+          <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" name="is_active" id="isActive" {% if not product or product.is_active %}checked{% endif %}><label class="form-check-label fw-semibold" for="isActive">Active</label></div>
+          <div class="form-check form-switch mb-3"><input class="form-check-input" type="checkbox" name="is_featured" id="isFeatured" {% if product and product.is_featured %}checked{% endif %}><label class="form-check-label fw-semibold" for="isFeatured">Featured on Homepage</label></div>
+        </div>
+        <div class="card p-4 reveal">
+          <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Images</h5>
+          <div class="mb-3"><label class="form-label">Product Image</label><input type="file" name="image" class="form-control" accept="image/*">{% if product and product.image %}<img src="{{ product.image.url }}" style="height:70px;margin-top:.5rem;border-radius:8px;border:1px solid var(--border);" alt="">{% endif %}</div>
+          <div><label class="form-label">Hover Image</label><input type="file" name="image_hover" class="form-control" accept="image/*">{% if product and product.image_hover %}<img src="{{ product.image_hover.url }}" style="height:70px;margin-top:.5rem;border-radius:8px;border:1px solid var(--border);" alt="">{% endif %}</div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-3"><button type="submit" class="btn btn-primary px-5"><i class="fas fa-save me-2"></i>Save Product</button><a href="/dashboard/products/" class="btn btn-outline-secondary px-4">Cancel</a></div>
+  </form>
+</div></div></div>
+{% endblock %}

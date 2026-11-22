@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Banner — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container-fluid p-0"><div class="row g-0" style="min-height:calc(100vh - 68px);">
+{% include 'admin_panel/sidebar.html' %}
+<div class="col-lg-10" style="padding:1.75rem;">
+  <div class="mb-4"><h2 style="font-weight:900;color:var(--text);margin:0;" class="text-gradient">{{ action }} Banner</h2></div>
+  <form method="post" enctype="multipart/form-data" style="max-width:700px;">
+    {% csrf_token %}
+    <div class="card p-4 mb-3 reveal">
+      <h5 style="font-weight:800;margin-bottom:1.25rem;color:var(--text);">Banner Content</h5>
+      <div class="row g-3">
+        <div class="col-12"><label class="form-label">Title *</label><input type="text" name="title" class="form-control" required value="{{ banner.title|default:'' }}"></div>
+        <div class="col-12"><label class="form-label">Subtitle</label><input type="text" name="subtitle" class="form-control" value="{{ banner.subtitle|default:'' }}"></div>
+        <div class="col-md-6"><label class="form-label">Button Text</label><input type="text" name="button_text" class="form-control" value="{{ banner.button_text|default:'' }}" placeholder="Shop Now"></div>
+        <div class="col-md-6"><label class="form-label">Button Link</label><input type="text" name="button_link" class="form-control" value="{{ banner.button_link|default:'' }}" placeholder="/products/"></div>
+        <div class="col-md-4"><label class="form-label">Banner Type</label><select name="banner_type" class="form-select">{% for val,label in banner_types %}<option value="{{ val }}" {% if banner and banner.banner_type == val %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+        <div class="col-md-4"><label class="form-label">Background Color</label><div class="d-flex gap-2"><input type="color" name="background_color" class="form-control form-control-color" value="{{ banner.background_color|default:'#1565c0' }}" style="width:55px;"><input type="text" class="form-control" value="{{ banner.background_color|default:'#1565c0' }}"></div></div>
+        <div class="col-md-4"><label class="form-label">Text Color</label><div class="d-flex gap-2"><input type="color" name="text_color" class="form-control form-control-color" value="{{ banner.text_color|default:'#ffffff' }}" style="width:55px;"><input type="text" class="form-control" value="{{ banner.text_color|default:'#ffffff' }}"></div></div>
+        <div class="col-md-4"><label class="form-label">Order</label><input type="number" name="order" class="form-control" value="{{ banner.order|default:0 }}"></div>
+        <div class="col-md-4"><label class="form-label">Start Date</label><input type="date" name="start_date" class="form-control" value="{{ banner.start_date|default:'' }}"></div>
+        <div class="col-md-4"><label class="form-label">End Date</label><input type="date" name="end_date" class="form-control" value="{{ banner.end_date|default:'' }}"></div>
+        <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" name="is_active" id="isActive" {% if not banner or banner.is_active %}checked{% endif %}><label class="form-check-label fw-semibold" for="isActive">Active</label></div></div>
+      </div>
+    </div>
+    <div class="d-flex gap-2"><button type="submit" class="btn btn-primary px-5"><i class="fas fa-save me-2"></i>Save Banner</button><a href="/dashboard/banners/" class="btn btn-outline-secondary px-4">Cancel</a></div>
+  </form>
+</div></div></div>
+{% endblock %}

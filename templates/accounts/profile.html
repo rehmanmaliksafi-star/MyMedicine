@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-user-circle me-2"></i>My Profile</h1></div></div>
+<div class="container mb-5" style="max-width:640px;">
+  <div class="card p-4 mb-3 reveal">
+    <h5 style="font-weight:800;margin-bottom:1.25rem;"><i class="fas fa-edit me-2 text-primary"></i>Personal Information</h5>
+    <form method="post">{% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">First Name</label><input type="text" name="first_name" class="form-control" value="{{ user.first_name }}"></div>
+        <div class="col-md-6"><label class="form-label">Last Name</label><input type="text" name="last_name" class="form-control" value="{{ user.last_name }}"></div>
+        <div class="col-12"><label class="form-label">Email Address</label><input type="email" name="email" class="form-control" value="{{ user.email }}" required></div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3"><i class="fas fa-save me-2"></i>Save Changes</button>
+    </form>
+  </div>
+  <div class="card p-4 reveal">
+    <h5 style="font-weight:800;margin-bottom:1rem;"><i class="fas fa-link me-2 text-primary"></i>Quick Links</h5>
+    <div class="d-flex flex-column gap-2">
+      <a href="/orders/my-orders/" class="btn btn-outline-secondary text-start"><i class="fas fa-shopping-bag me-2 text-primary"></i>My Orders</a>
+      <a href="/my-prescriptions/" class="btn btn-outline-secondary text-start"><i class="fas fa-prescription me-2 text-primary"></i>My Prescriptions</a>
+      <a href="/accounts/change-password/" class="btn btn-outline-secondary text-start"><i class="fas fa-lock me-2 text-primary"></i>Change Password</a>
+      <a href="/articles/health-profile/" class="btn btn-outline-secondary text-start"><i class="fas fa-heart me-2 text-primary"></i>Health Profile</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
